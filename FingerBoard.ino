@@ -20,104 +20,53 @@ FingerBoard fingerBoard(&Serial1);
 
 void setup()
 {
-  Serial.begin(115200);
+	Serial.begin(115200);
 
-  FbStatus status = fingerBoard.Begin(&Serial);
+	// Begin(&Serial) means debug mode, will output messages using Serial
+	// Use fingerBoard.Begin() to begin without debug message output
 
-  if (status == FbStatus::ERROR_SENSOR_NOT_FOUND)
-  {
-    Serial.println("Did not find fingerprint sensor :(");
-    while (true);
-  }
+	FbStatus status = fingerBoard.Begin(&Serial); 
+
+	if (status == FbStatus::ERROR_SENSOR_NOT_FOUND)
+	{
+		Serial.println("Did not find fingerprint sensor :(");
+		while (true);
+	}
 }
 
 void loop()
 {
-  CmdCheck();
+	// Serial CMD routine...
+	fingerBoard.CmdCheck();
 
-  int id = fingerBoard.GetFingerID();
+	int id = fingerBoard.GetFingerID();
 
-  switch (id)
-  {
-  case 1: case 2: case 3:
-    fingerBoard.InputPassword("299792458Microsoft");
-    break;
+	switch (id)
+	{
+	case 1: case 2: case 3:
+		fingerBoard.InputPassword("kj7ooim");
+		break;
 
-  case 4: case 5: case 6:
-    fingerBoard.InputPassword("299792458@TT");
-    break;
+	case 4: case 5: case 6:
+		fingerBoard.InputPassword("299792458@TT");
+		break;
 
-  case 7: case 8: case 9:
-    fingerBoard.InputPassword("299792458");
-    break;
+	case 7: case 8: case 9:
+		fingerBoard.InputPassword("299792458");
+		break;
 
-    /* 
+		/* 
 
-    you can also use like this:
+		you can also use like this:
 
-    // The keyboard will type the string and perform an enter.
-    fingerBoard.InputString("www.pengzhihui.com", true);
+		// The keyboard will type the string and perform an enter.
+		fingerBoard.TypeString("www.pengzhihui.com", true);
 
-    // The keyboard will press ctrl+v and then release.
-    fingerBoard.Press(KEY_LEFT_CTRL);
-    fingerBoard.Press('v');
-    fingerBoard.Release();
-
-    */
-  }
-
-  delay(300);
-}
-
-
-void CmdCheck()
-{
-  if (Serial.available() > 0)
-  {
-    char c = Serial.read();
-
-    switch (c)
-    {
-    case  'A':  //Add Finger
-      while (true)
-      {
-        Serial.println("Please enter the ID you want to enroll:");
-
-        while (Serial.available() <= 0);
-        int p = Serial.parseInt();
-
-        if (p >= 0 && p < 10)
-        {
-          Serial.print("Enrolling [");
-          Serial.print(p);
-          Serial.println("] finger...");
-
-          if (fingerBoard.AddFinger(p))
-          {
-            Serial.println("-------------------");
-            Serial.println("Add ok !");
-            Serial.println("-------------------");
-          }
-          else
-          {
-            Serial.println("-------------------");
-            Serial.println("Add failed !");
-            Serial.println("-------------------");
-          }
-
-          break;
-        }
-        else
-        {
-          Serial.println("Please enter a valid ID !");
-        }
-      }
-
-      break;
-    case 'D': //Delete all fingers
-      fingerBoard.DeleteAllFingers();
-      Serial.println("All Finger deleted !");
-      break;
-    }
-  }
+		// The keyboard will press ctrl+v and then release.
+		fingerBoard.PressKey(KEY_LEFT_CTRL);
+		fingerBoard.PressKey('v');
+		fingerBoard.ReleaseAll();
+		 
+		*/
+	}
 }

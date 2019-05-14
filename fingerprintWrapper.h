@@ -2,9 +2,11 @@
 #include "fingerprint.h"
 #include "Keyboard.h"
 
+#define MAX_FINGERS 20
+
 enum FbStatus
 {
-	ERROR_SENSOR_NOT_FOUND = 1,
+	ERROR_SENSOR_NOT_FOUND = -2,
 	SUCCESS = 0,
 	ERROR_NO_FINGER = -1
 };
@@ -17,22 +19,29 @@ public:
 	FbStatus Begin();
 	FbStatus Begin(Serial_* hs);
 
+	bool CmdCheck();
+
 	int GetFingerID();
 	bool AddFinger(unsigned int id);
 	void DeleteAllFingers();
 
-
 	void InputPassword(String pswd);
-	void InputString(String s, bool enter);
-	void Press(uint8_t k);
-	void Release();
+	void TypeString(String s, bool enter);
+	void PressKey(uint8_t k);
+	void ReleaseAll();
 
 private:
 	Serial_* debug = NULL;
 	HardwareSerial* sensorSerial = NULL;
 	Fingerprint sensor = NULL;
 
+	char comdata[256], data_p; //´®¿Ú»º´æÊý¾Ý
+	long time;
+	long INTERVAL = 200; //ms
+
 	bool isTouching = false;
+
+	String passwords[MAX_FINGERS];
 
 	volatile unsigned char FPMXX_RECEIVE_BUFFER[64];
 
