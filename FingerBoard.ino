@@ -20,53 +20,63 @@ FingerBoard fingerBoard(&Serial1);
 
 void setup()
 {
-	Serial.begin(115200);
+  Serial.begin(115200);
 
-	// Begin(&Serial) means debug mode, will output messages using Serial
-	// Use fingerBoard.Begin() to begin without debug message output
+  // Begin(&Serial) means debug mode, will output messages using Serial
+  // Use fingerBoard.Begin() to begin without debug message output
 
-	FbStatus status = fingerBoard.Begin(&Serial); 
+  FbStatus status = fingerBoard.Begin(&Serial); 
 
-	if (status == FbStatus::ERROR_SENSOR_NOT_FOUND)
-	{
-		Serial.println("Did not find fingerprint sensor :(");
-		while (true);
-	}
+  if (status == FbStatus::ERROR_SENSOR_NOT_FOUND)
+  {
+    Serial.println("Did not find fingerprint sensor :(");
+    while (true);
+  }
 }
 
 void loop()
 {
-	// Serial CMD routine...
-	fingerBoard.CmdCheck();
+  // Serial CMD routine...
+  fingerBoard.CmdCheck();
 
-	int id = fingerBoard.GetFingerID();
+  /* 
+   *  Add finger using Serial comand:
+   *  Send "A,3" (without ", and need \n or ENTER) and put on your finger to add finger as NO.3
+   *  Send "D" (without ", and need \n or ENTER)to delete all finger
+   *  more commads to be add later...
+   */
 
-	switch (id)
-	{
-	case 1: case 2: case 3:
-		fingerBoard.InputPassword("kj7ooim");
-		break;
+  // Run this as often as possible, if there is a finger detected, 
+  // the id will be returned, otherwise returns -1
+  
+  int id = fingerBoard.GetFingerID();
 
-	case 4: case 5: case 6:
-		fingerBoard.InputPassword("299792458@TT");
-		break;
+  switch (id)
+  {
+  case 1: case 2: case 3:
+    fingerBoard.InputPassword("12345678");
+    break;
 
-	case 7: case 8: case 9:
-		fingerBoard.InputPassword("299792458");
-		break;
+  case 4: case 5: case 6:
+    fingerBoard.InputPassword("123456789");
+    break;
 
-		/* 
+  case 7: case 8: case 9:
+    fingerBoard.InputPassword("aaabbbccc");
+    break;
 
-		you can also use like this:
+    /* 
 
-		// The keyboard will type the string and perform an enter.
-		fingerBoard.TypeString("www.pengzhihui.com", true);
+    you can also use like this:
 
-		// The keyboard will press ctrl+v and then release.
-		fingerBoard.PressKey(KEY_LEFT_CTRL);
-		fingerBoard.PressKey('v');
-		fingerBoard.ReleaseAll();
-		 
-		*/
-	}
+    // The keyboard will type the string and perform an enter.
+    fingerBoard.TypeString("www.pengzhihui.com", true);
+
+    // The keyboard will press ctrl+v and then release.
+    fingerBoard.PressKey(KEY_LEFT_CTRL);
+    fingerBoard.PressKey('v');
+    fingerBoard.ReleaseAll();
+     
+    */
+  }
 }
