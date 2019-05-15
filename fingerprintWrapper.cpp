@@ -85,7 +85,7 @@ bool FingerBoard::CmdCheck()
 
 				break;
 
-			case 'P':
+			case 'P': // not used 
 				strtok(comdata, ",");
 				p = atoi(strtok(NULL, ","));
 
