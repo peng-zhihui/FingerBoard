@@ -30,7 +30,6 @@ void setup()
   if (status == FbStatus::ERROR_SENSOR_NOT_FOUND)
   {
     Serial.println("Did not find fingerprint sensor :(");
-    while (true);
   }
 }
 
